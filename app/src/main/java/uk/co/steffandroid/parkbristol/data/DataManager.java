@@ -8,7 +8,7 @@ import io.urbanthings.datamodel.VehicleType;
 import rx.Observable;
 import rx.observables.StringObservable;
 import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import uk.co.steffandroid.parkbristol.data.api.UrbanThingsService;
 import uk.co.steffandroid.parkbristol.data.model.CarPark;
 import uk.co.steffandroid.parkbristol.data.model.Response;
@@ -20,7 +20,7 @@ public class DataManager {
     private static final double MAX_LNG = -2.2484666481614113;
 
     private final UrbanThingsService service;
-    private final BehaviorSubject<Boolean> refreshSubject = BehaviorSubject.create();
+    private final PublishSubject<Boolean> refreshSubject = PublishSubject.create();
 
     public DataManager(UrbanThingsService service) {
         this.service = service;
@@ -29,7 +29,7 @@ public class DataManager {
     public Observable<List<CarPark>> getCarParks(Location location) {
         return refreshSubject.asObservable().startWith(true)
                 .observeOn(Schedulers.io())
-                .flatMap(refresh -> service.getCarParks(VehicleType.Car, MIN_LAT, MAX_LAT, MIN_LNG, MAX_LNG))
+                .switchMap(refresh -> service.getCarParks(VehicleType.Car, MIN_LAT, MAX_LAT, MIN_LNG, MAX_LNG))
                 .map(Response::data)
                 .flatMap(placePoints -> StringObservable.join(Observable.from(placePoints)
                         .map(placePoint -> placePoint.primaryCode), ",")
