@@ -12,6 +12,7 @@ import io.urbanthings.helpers.DateHelper;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
@@ -40,9 +41,10 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient(Interceptor interceptor) {
+    OkHttpClient provideOkHttpClient(Interceptor interceptor, HttpLoggingInterceptor loggingInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
+                .addInterceptor(loggingInterceptor)
                 .build();
     }
 
@@ -60,6 +62,14 @@ public class ApiModule {
 
             return chain.proceed(request);
         };
+    }
+
+    @Provides
+    @Singleton
+    HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+        return interceptor;
     }
 
     @Provides

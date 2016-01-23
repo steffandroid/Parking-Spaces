@@ -7,15 +7,16 @@ import io.urbanthings.datamodel.ResourceStatus;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
+import uk.co.steffandroid.parkbristol.data.model.Response;
 
 public interface UrbanThingsService {
     @GET("static/stops")
-    Observable<List<PlacePoint>> getCarParks(@Query("stopmodes") int vehicleType,
+    Observable<Response<List<PlacePoint>>> getCarParks(@Query("stopmodes") int vehicleType,
                                              @Query("minlat") double minLat,
                                              @Query("maxlat") double maxLat,
                                              @Query("minlng") double minLong,
                                              @Query("maxlng") double maxLong);
 
     @GET("rti/resources/status")
-    Observable<List<ResourceStatus>> getStatus(@Query("stopids") String id);
+    Observable<Response<List<ResourceStatus>>> getStatuses(@Query("stopids") String ids);
 }

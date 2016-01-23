@@ -42,7 +42,7 @@ public class MainActivity extends RxAppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        CarParkAdapter adapter = new CarParkAdapter();
+        CarParkAdapter adapter = new CarParkAdapter(this);
         carParkList.setAdapter(adapter);
         carParkList.setLayoutManager(new LinearLayoutManager(this));
 

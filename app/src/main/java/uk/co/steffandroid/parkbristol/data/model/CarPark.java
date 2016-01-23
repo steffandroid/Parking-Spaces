@@ -68,6 +68,24 @@ public class CarPark {
         return status;
     }
 
+    public enum Status {
+        LOADS_OF_ROOM(R.color.color_green),
+        NOT_MUCH_ROOM(R.color.color_amber),
+        FULL(R.color.color_red),
+        CLOSED(R.color.color_grey);
+
+        private int colorRes;
+
+        Status(@ColorRes int colorRes) {
+            this.colorRes = colorRes;
+        }
+
+        @ColorRes
+        public int colorRes() {
+            return colorRes;
+        }
+    }
+
     public static class Builder {
         private PlacePoint placePoint;
         private ResourceStatus resourceStatus;
@@ -84,23 +102,6 @@ public class CarPark {
 
         public CarPark build() {
             return new CarPark(this);
-        }
-    }
-
-    public enum Status {
-        LOADS_OF_ROOM(R.color.color_green),
-        NOT_MUCH_ROOM(R.color.color_amber),
-        FULL(R.color.color_red),
-        CLOSED(R.color.color_grey);
-
-        private int colorRes;
-
-        Status(@ColorRes int colorRes) {
-            this.colorRes = colorRes;
-        }
-
-        public int colorRes() {
-            return colorRes;
         }
     }
 }
