@@ -4,6 +4,8 @@ import android.location.Location;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.DecimalFormat;
 
 import io.urbanthings.datamodel.PlacePoint;
@@ -13,7 +15,7 @@ import uk.co.steffandroid.parkbristol.R;
 public class CarPark implements Comparable<CarPark> {
     private String primaryCode;
     private String name;
-    private Location location;
+    private LatLng latLng;
     private double distance;
     private String statusText;
     private int available;
@@ -23,12 +25,12 @@ public class CarPark implements Comparable<CarPark> {
     private CarPark(Builder builder) {
         this.primaryCode = builder.placePoint.primaryCode;
         this.name = builder.placePoint.name;
-        Location location = new Location("");
-        location.setLatitude(builder.placePoint.lat);
-        location.setLongitude(builder.placePoint.lng);
-        this.location = location;
+        this.latLng = new LatLng(builder.placePoint.lat, builder.placePoint.lng);
         if (builder.location != null) {
-            this.distance = this.location.distanceTo(builder.location) * 0.000621371;
+            Location location = new Location("");
+            location.setLatitude(builder.placePoint.lat);
+            location.setLongitude(builder.placePoint.lng);
+            this.distance = location.distanceTo(builder.location) * 0.000621371;
         }
         this.statusText = builder.resourceStatus.statusText;
         this.available = builder.resourceStatus.availablePlaces;
@@ -53,8 +55,8 @@ public class CarPark implements Comparable<CarPark> {
         return name.replace("P+R", "Park and Ride");
     }
 
-    public Location location() {
-        return location;
+    public LatLng latLng() {
+        return latLng;
     }
 
     public String distanceText() {

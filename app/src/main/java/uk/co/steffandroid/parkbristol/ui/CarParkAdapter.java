@@ -9,6 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +44,14 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         CarPark carPark = carParkList.get(position);
-        holder.background.setBackgroundColor(ContextCompat.getColor(context, carPark.status().colorRes()));
-        holder.name.setText(carPark.name());
-        holder.status.setText(carPark.statusText());
-        if (!TextUtils.isEmpty(carPark.distanceText())) {
-            holder.distance.setVisibility(View.VISIBLE);
-            holder.distance.setText(carPark.distanceText());
-        } else {
-            holder.distance.setVisibility(View.GONE);
+        holder.bind(carPark);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        if (holder.map != null) {
+            holder.map.clear();
+            holder.map.setMapType(GoogleMap.MAP_TYPE_NONE);
         }
     }
 
@@ -62,9 +70,11 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
         void onClick(CarPark carPark);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, OnMapReadyCallback {
         @Bind(R.id.car_park_background)
         View background;
+        @Bind(R.id.car_park_map)
+        MapView mapView;
         @Bind(R.id.car_park_name)
         TextView name;
         @Bind(R.id.car_park_status)
@@ -72,16 +82,51 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
         @Bind(R.id.car_park_distance)
         TextView distance;
 
+        private GoogleMap map;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
+            if (mapView != null) {
+                mapView.onCreate(null);
+                mapView.onResume();
+                mapView.getMapAsync(this);
+            }
+        }
+
+        public void bind(CarPark carPark) {
+            background.setBackgroundColor(ContextCompat.getColor(context, carPark.status().colorRes()));
+            name.setText(carPark.name());
+            status.setText(carPark.statusText());
+            if (!TextUtils.isEmpty(carPark.distanceText())) {
+                distance.setVisibility(View.VISIBLE);
+                distance.setText(carPark.distanceText());
+            } else {
+                distance.setVisibility(View.GONE);
+            }
+            bindMap(carPark);
+        }
+
+        private void bindMap(CarPark carPark) {
+            if (map != null) {
+                map.addMarker(new MarkerOptions().position(carPark.latLng()));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(carPark.latLng(), 15);
+                map.moveCamera(cameraUpdate);
+            }
         }
 
         @Override
         public void onClick(View v) {
             listener.onClick(carParkList.get(getAdapterPosition()));
+        }
+
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            MapsInitializer.initialize(context);
+            map = googleMap;
+            bindMap(carParkList.get(getAdapterPosition()));
         }
     }
 }
