@@ -53,6 +53,7 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
     }
 
     public void addAll(List<CarPark> carParks) {
+        carParkList.clear();
         carParkList.addAll(carParks);
         notifyDataSetChanged();
     }

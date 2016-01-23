@@ -7,6 +7,8 @@ import java.util.List;
 import io.urbanthings.datamodel.VehicleType;
 import rx.Observable;
 import rx.observables.StringObservable;
+import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import uk.co.steffandroid.parkbristol.data.api.UrbanThingsService;
 import uk.co.steffandroid.parkbristol.data.model.CarPark;
 import uk.co.steffandroid.parkbristol.data.model.Response;
@@ -18,13 +20,16 @@ public class DataManager {
     private static final double MAX_LNG = -2.2484666481614113;
 
     private final UrbanThingsService service;
+    private final BehaviorSubject<Boolean> refreshSubject = BehaviorSubject.create();
 
     public DataManager(UrbanThingsService service) {
         this.service = service;
     }
 
     public Observable<List<CarPark>> getCarParks(Location location) {
-        return service.getCarParks(VehicleType.Car, MIN_LAT, MAX_LAT, MIN_LNG, MAX_LNG)
+        return refreshSubject.asObservable().startWith(true)
+                .observeOn(Schedulers.io())
+                .flatMap(refresh -> service.getCarParks(VehicleType.Car, MIN_LAT, MAX_LAT, MIN_LNG, MAX_LNG))
                 .map(Response::data)
                 .flatMap(placePoints -> StringObservable.join(Observable.from(placePoints)
                         .map(placePoint -> placePoint.primaryCode), ",")
@@ -37,6 +42,11 @@ public class DataManager {
                                         .resourceStatus(resourceStatusMap.get(placePoint.primaryCode))
                                         .location(location)
                                         .build())
-                                .toSortedList()));
+                                .toSortedList()))
+                .cache();
+    }
+
+    public void refresh() {
+        refreshSubject.onNext(true);
     }
 }

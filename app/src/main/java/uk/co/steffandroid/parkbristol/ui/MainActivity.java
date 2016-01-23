@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,12 +30,12 @@ public class MainActivity extends RxAppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.car_park_refresh_layout)
+    SwipeRefreshLayout refreshLayout;
     @Bind(R.id.car_park_list)
     RecyclerView carParkList;
     @Bind(R.id.error)
     View error;
-    @Bind(R.id.progress)
-    View progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +57,14 @@ public class MainActivity extends RxAppCompatActivity {
         carParkList.setAdapter(adapter);
         carParkList.setLayoutManager(new LinearLayoutManager(this));
 
+        refreshLayout.setOnRefreshListener(dataManager::refresh);
+
         showProgress(true);
         RxPermissions.getInstance(this)
                 .request(Manifest.permission.ACCESS_FINE_LOCATION)
                 .filter(granted -> granted)
                 .flatMap(granted -> new ReactiveLocationProvider(this).getLastKnownLocation())
                 .firstOrDefault(null)
-                .observeOn(Schedulers.io())
                 .flatMap(dataManager::getCarParks)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,12 +80,12 @@ public class MainActivity extends RxAppCompatActivity {
     private void showProgress(boolean isLoading) {
         carParkList.setVisibility(isLoading ? View.GONE : View.VISIBLE);
         error.setVisibility(View.GONE);
-        progress.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        refreshLayout.post(() -> refreshLayout.setRefreshing(isLoading));
     }
 
     private void showError() {
         carParkList.setVisibility(View.GONE);
         error.setVisibility(View.VISIBLE);
-        progress.setVisibility(View.GONE);
+        refreshLayout.setRefreshing(false);
     }
 }
