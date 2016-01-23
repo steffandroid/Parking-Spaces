@@ -1,16 +1,20 @@
 package uk.co.steffandroid.parkbristol.data.model;
 
+import android.location.Location;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
+
+import java.text.DecimalFormat;
 
 import io.urbanthings.datamodel.PlacePoint;
 import io.urbanthings.datamodel.ResourceStatus;
 import uk.co.steffandroid.parkbristol.R;
 
-public class CarPark {
+public class CarPark implements Comparable<CarPark> {
     private String primaryCode;
     private String name;
-    private double latitude;
-    private double longitude;
+    private Location location;
+    private double distance;
     private String statusText;
     private int available;
     private int taken;
@@ -19,15 +23,20 @@ public class CarPark {
     private CarPark(Builder builder) {
         this.primaryCode = builder.placePoint.primaryCode;
         this.name = builder.placePoint.name;
-        this.latitude = builder.placePoint.lat;
-        this.longitude = builder.placePoint.lng;
+        Location location = new Location("");
+        location.setLatitude(builder.placePoint.lat);
+        location.setLongitude(builder.placePoint.lng);
+        this.location = location;
+        if (builder.location != null) {
+            this.distance = this.location.distanceTo(builder.location) * 0.000621371;
+        }
         this.statusText = builder.resourceStatus.statusText;
         this.available = builder.resourceStatus.availablePlaces;
         this.taken = builder.resourceStatus.takenPlaces;
         double capacity = taken + available;
         if (builder.resourceStatus.isClosed) {
             this.status = Status.CLOSED;
-        } else if (taken / capacity < 0.8) {
+        } else if (taken / capacity < 0.9) {
             this.status = Status.LOADS_OF_ROOM;
         } else if (taken / capacity < 0.95) {
             this.status = Status.NOT_MUCH_ROOM;
@@ -41,15 +50,19 @@ public class CarPark {
     }
 
     public String name() {
-        return name;
+        return name.replace("P+R", "Park and Ride");
     }
 
-    public double latitude() {
-        return latitude;
+    public Location location() {
+        return location;
     }
 
-    public double longitude() {
-        return longitude;
+    public String distanceText() {
+        if (distance != 0) {
+            return new DecimalFormat("#.#").format(distance) + "mi";
+        } else {
+            return null;
+        }
     }
 
     public String statusText() {
@@ -66,6 +79,11 @@ public class CarPark {
 
     public Status status() {
         return status;
+    }
+
+    @Override
+    public int compareTo(@NonNull CarPark another) {
+        return Double.compare(distance, another.distance);
     }
 
     public enum Status {
@@ -89,6 +107,7 @@ public class CarPark {
     public static class Builder {
         private PlacePoint placePoint;
         private ResourceStatus resourceStatus;
+        private Location location;
 
         public Builder placePoint(PlacePoint placePoint) {
             this.placePoint = placePoint;
@@ -97,6 +116,11 @@ public class CarPark {
 
         public Builder resourceStatus(ResourceStatus resourceStatus) {
             this.resourceStatus = resourceStatus;
+            return this;
+        }
+
+        public Builder location(Location location) {
+            this.location = location;
             return this;
         }
 

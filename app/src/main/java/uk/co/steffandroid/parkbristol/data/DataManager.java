@@ -1,5 +1,7 @@
 package uk.co.steffandroid.parkbristol.data;
 
+import android.location.Location;
+
 import java.util.List;
 
 import io.urbanthings.datamodel.VehicleType;
@@ -21,7 +23,7 @@ public class DataManager {
         this.service = service;
     }
 
-    public Observable<List<CarPark>> getCarParks() {
+    public Observable<List<CarPark>> getCarParks(Location location) {
         return service.getCarParks(VehicleType.Car, MIN_LAT, MAX_LAT, MIN_LNG, MAX_LNG)
                 .map(Response::data)
                 .flatMap(placePoints -> StringObservable.join(Observable.from(placePoints)
@@ -33,7 +35,8 @@ public class DataManager {
                                 .map(placePoint -> new CarPark.Builder()
                                         .placePoint(placePoint)
                                         .resourceStatus(resourceStatusMap.get(placePoint.primaryCode))
+                                        .location(location)
                                         .build())
-                                .toList()));
+                                .toSortedList()));
     }
 }
