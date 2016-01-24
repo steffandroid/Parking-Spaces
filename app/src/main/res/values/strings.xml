@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Park Bristol</string>
-    <string name="error">Error loading car parks</string>
+    <string name="app_name">Parking Spaces</string>
+    <string name="error">Error loading parking spaces</string>
 </resources>

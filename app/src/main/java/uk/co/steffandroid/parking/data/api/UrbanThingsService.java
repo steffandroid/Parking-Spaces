@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.data.api;
+package uk.co.steffandroid.parking.data.api;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import io.urbanthings.datamodel.ResourceStatus;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
-import uk.co.steffandroid.parkbristol.data.model.Response;
+import uk.co.steffandroid.parking.data.model.Response;
 
 public interface UrbanThingsService {
     @GET("static/stops")

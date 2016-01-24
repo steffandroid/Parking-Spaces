@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.data.api;
+package uk.co.steffandroid.parking.data.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

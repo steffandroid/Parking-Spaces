@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol;
+package uk.co.steffandroid.parking;
 
 import org.junit.Test;
 

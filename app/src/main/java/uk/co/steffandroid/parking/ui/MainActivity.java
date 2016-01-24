@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.ui;
+package uk.co.steffandroid.parking.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -20,9 +20,9 @@ import butterknife.ButterKnife;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import uk.co.steffandroid.parkbristol.ParkingApp;
-import uk.co.steffandroid.parkbristol.R;
-import uk.co.steffandroid.parkbristol.data.DataManager;
+import uk.co.steffandroid.parking.ParkingApp;
+import uk.co.steffandroid.parking.R;
+import uk.co.steffandroid.parking.data.DataManager;
 
 public class MainActivity extends RxAppCompatActivity {
     @Inject

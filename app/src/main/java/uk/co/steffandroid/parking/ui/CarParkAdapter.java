@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.ui;
+package uk.co.steffandroid.parking.ui;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -22,8 +22,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import uk.co.steffandroid.parkbristol.R;
-import uk.co.steffandroid.parkbristol.data.model.CarPark;
+import uk.co.steffandroid.parking.R;
+import uk.co.steffandroid.parking.data.model.CarPark;
 
 public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHolder> {
     private Context context;

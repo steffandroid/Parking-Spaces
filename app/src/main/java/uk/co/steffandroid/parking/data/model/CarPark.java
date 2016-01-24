@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.data.model;
+package uk.co.steffandroid.parking.data.model;
 
 import android.location.Location;
 import android.support.annotation.ColorRes;
@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 
 import io.urbanthings.datamodel.PlacePoint;
 import io.urbanthings.datamodel.ResourceStatus;
-import uk.co.steffandroid.parkbristol.R;
+import uk.co.steffandroid.parking.R;
 
 public class CarPark implements Comparable<CarPark> {
     private String primaryCode;

@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.data.model;
+package uk.co.steffandroid.parking.data.model;
 
 public class Response<T> {
     private boolean success;

@@ -1,4 +1,4 @@
-package uk.co.steffandroid.parkbristol.data;
+package uk.co.steffandroid.parking.data;
 
 import android.location.Location;
 
@@ -9,9 +9,9 @@ import rx.Observable;
 import rx.observables.StringObservable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-import uk.co.steffandroid.parkbristol.data.api.UrbanThingsService;
-import uk.co.steffandroid.parkbristol.data.model.CarPark;
-import uk.co.steffandroid.parkbristol.data.model.Response;
+import uk.co.steffandroid.parking.data.api.UrbanThingsService;
+import uk.co.steffandroid.parking.data.model.CarPark;
+import uk.co.steffandroid.parking.data.model.Response;
 
 public class DataManager {
     private static final double MIN_LAT = 51.25399873081391;
