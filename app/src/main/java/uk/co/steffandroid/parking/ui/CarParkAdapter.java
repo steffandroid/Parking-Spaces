@@ -48,14 +48,6 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
-        if (holder.map != null) {
-            holder.map.clear();
-            holder.map.setMapType(GoogleMap.MAP_TYPE_NONE);
-        }
-    }
-
-    @Override
     public int getItemCount() {
         return carParkList.size();
     }
@@ -111,6 +103,7 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
 
         private void bindMap(CarPark carPark) {
             if (map != null) {
+                map.clear();
                 map.addMarker(new MarkerOptions().position(carPark.latLng()));
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(carPark.latLng(), 15);
                 map.moveCamera(cameraUpdate);
@@ -126,6 +119,7 @@ public class CarParkAdapter extends RecyclerView.Adapter<CarParkAdapter.ViewHold
         public void onMapReady(GoogleMap googleMap) {
             MapsInitializer.initialize(context);
             map = googleMap;
+            map.getUiSettings().setMapToolbarEnabled(false);
             bindMap(carParkList.get(getAdapterPosition()));
         }
     }
